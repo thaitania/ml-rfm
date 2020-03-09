@@ -21,26 +21,31 @@ type recencyDataRaw struct {
 }
 
 // AddRecencyRawData is function for show raw data in n (row) after skip (row)
-func (cls *RecencyData) AddRecencyRawData(userID string, recencyNum int) (*RecencyData, error) {
+func (rd *RecencyData) AddRecencyRawData(userID string, recencyNum int) (*RecencyData, error) {
 	if len(userID) == 0 {
-		return cls, errors.New("field userID is required")
+		return rd, errors.New("field userID is required")
 	}
 
-	cls.recencyDataRaw = append(cls.recencyDataRaw, recencyDataRaw{
+	rd.recencyDataRaw = append(rd.recencyDataRaw, recencyDataRaw{
 		userID:  userID,
 		recency: recencyNum,
 	})
-	cls.count++
-	return cls, nil
+	rd.count++
+	return rd, nil
 }
 
-// GetRecencyRawData is function for show raw data in n (row) after skip (row)
-func (cls *RecencyData) GetRecencyRawData(row int, skip int) (*RecencyData, error) {
-	if len(cls.recencyDataRaw) < row {
-		return cls, errors.New("(n) raw is more than data length")
+// GetRecencyRawDataRange is function for show raw data in n (row) after skip (row)
+func (rd *RecencyData) GetRecencyRawDataRange(row int, skip int) (*RecencyData, error) {
+	if len(rd.recencyDataRaw) < row {
+		return rd, errors.New("(n) raw is more than data length")
 	}
-	if len(cls.recencyDataRaw) < row+skip {
-		return cls, errors.New("(n) raw and skip is more than data length")
+	if len(rd.recencyDataRaw) < row+skip {
+		return rd, errors.New("(n) raw and skip is more than data length")
 	}
-	return cls, nil
+	ct := &RecencyData{}
+	ct.count = row
+	for i := 0; i < row; i++ {
+		ct.recencyDataRaw = append(ct.recencyDataRaw, rd.recencyDataRaw[skip+i])
+	}
+	return ct, nil
 }
