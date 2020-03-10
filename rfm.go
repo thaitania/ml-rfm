@@ -26,10 +26,10 @@ type DataRawSet struct {
 
 // DataRaw is function for keep raw RFM data
 type DataRaw struct {
-	userID              string
-	recency             int
-	purchaseTransaction int
-	price               float64
+	UserID              string
+	Recency             int
+	PurchaseTransaction int
+	Price               float64
 }
 
 // // RFMResult is function for show data of RFM Stat struct in Cluster
@@ -63,12 +63,12 @@ func (rfm *RFM) GenerateRecency(rd *DataRawSet) (*RFM, error) {
 	// println(fmt.Sprintf("%v", rstat.Max))
 	for _, rd := range rd.data {
 		rstat.Count++
-		if float64(rd.recency) > rstat.Max {
-			rstat.Max = float64(rd.recency)
+		if float64(rd.Recency) > rstat.Max {
+			rstat.Max = float64(rd.Recency)
 		}
 
-		if float64(rd.recency) < rstat.Min {
-			rstat.Min = float64(rd.recency)
+		if float64(rd.Recency) < rstat.Min {
+			rstat.Min = float64(rd.Recency)
 		}
 	}
 	mxmn := rstat.Max - rstat.Min
@@ -76,7 +76,7 @@ func (rfm *RFM) GenerateRecency(rd *DataRawSet) (*RFM, error) {
 	for _, e := range rd.data {
 		d = append(d, kmeans.Point{
 			0.00,
-			(float64(e.recency) - rstat.Min) / mxmn,
+			(float64(e.Recency) - rstat.Min) / mxmn,
 		})
 	}
 
@@ -119,7 +119,7 @@ func (rfm *RFM) GenerateRecency(rd *DataRawSet) (*RFM, error) {
 	}
 
 	sort.Slice(re.Cluster, func(i, j int) bool {
-		return re.Cluster[i].Stat.Min < re.Cluster[j].Stat.Min
+		return re.Cluster[i].Stat.Min > re.Cluster[j].Stat.Min
 	})
 	rfm.Recency = re
 
@@ -138,10 +138,10 @@ func (rd *DataRawSet) AddRFMRawData(userID string, recencyNum int, purchaseTrans
 	}
 
 	rd.data = append(rd.data, DataRaw{
-		userID:              userID,
-		recency:             recencyNum,
-		purchaseTransaction: purchaseTransaction,
-		price:               price,
+		UserID:              userID,
+		Recency:             recencyNum,
+		PurchaseTransaction: purchaseTransaction,
+		Price:               price,
 	})
 	rd.count++
 	return rd, nil

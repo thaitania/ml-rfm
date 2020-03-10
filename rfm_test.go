@@ -55,8 +55,7 @@ func BenchmarkAddDataRawSet(b *testing.B) {
 }
 
 func TestGenerateRecency(t *testing.T) {
-	rfm := &RFM{}
-	rfm.SetClusterSize(4)
+	rfm := &RFM{ClusterSize: 4}
 	rd := InitRawData()
 	for i := 0; i < 100000; i++ {
 		pts := rand.Intn(6)
