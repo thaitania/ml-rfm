@@ -125,13 +125,6 @@ func (rfm *RFM) GenerateRecency(rd *DataRawSet) (*RFM, error) {
 
 	for i := range rfm.Recency.Cluster {
 		rfm.Recency.Cluster[i].ClusterNum = i
-		// println("Cluster: ", i, ", Size: ", len(e.Points))
-		// println("Count: ", fmt.Sprintf("%v", e.Stat.Count), ",Min: ", fmt.Sprintf("%.2f", e.Stat.Min), ",Max: ", fmt.Sprintf("%.2f", e.Stat.Max),
-		// 	",STD: ", fmt.Sprintf("%.2f", e.Stat.STD),
-		// 	",Mean: ", fmt.Sprintf("%.2f", e.Stat.Mean),
-		// 	",P25: ", fmt.Sprintf("%.2f", e.Stat.P25),
-		// 	",P50: ", fmt.Sprintf("%.2f", e.Stat.P50),
-		// 	",P75: ", fmt.Sprintf("%.2f", e.Stat.P75))
 		// println(fmt.Sprintf("%v", e.Points))
 	}
 

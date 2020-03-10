@@ -1,6 +1,7 @@
 package rfm
 
 import (
+	"fmt"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -9,7 +10,8 @@ import (
 // TestAddDataRawSet is function for test add recency raw data
 func TestAddDataRawSet(t *testing.T) {
 	rd := InitRawData()
-	for i := 0; i < 100000; i++ {
+	loop := 100000
+	for i := 0; i < loop; i++ {
 		pts := rand.Intn(6)
 		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(500), pts, float64(pts*rand.Intn(2000)))
 	}
@@ -29,7 +31,7 @@ func TestAddDataRawSet(t *testing.T) {
 		println("= TestAddDataRawSet Process: 3/5 : must be not error : PASS")
 	}
 
-	_, err = rd.GetRFMRawDataByRange(5, 1021)
+	_, err = rd.GetRFMRawDataByRange(5, loop)
 	if err == nil {
 		t.Errorf("= TestAddDataRawSet Process: 4/5 : must be error : ERROR")
 	} else {
@@ -58,11 +60,20 @@ func TestGenerateRecency(t *testing.T) {
 	rd := InitRawData()
 	for i := 0; i < 100000; i++ {
 		pts := rand.Intn(6)
-		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(20), pts, float64(pts*rand.Intn(2000)))
+		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(500), pts, float64(pts*rand.Intn(2000)))
 	}
 
 	println("= TestGenerateRecency Process: 1/5 : must be not error : PASS")
 	rfm.GenerateRecency(rd)
+	for _, e := range rfm.Recency.Cluster {
+		println("Cluster: ", e.ClusterNum, ", Size: ", len(e.Points))
+		println("Count: ", fmt.Sprintf("%v", e.Stat.Count), ",Min: ", fmt.Sprintf("%.2f", e.Stat.Min), ",Max: ", fmt.Sprintf("%.2f", e.Stat.Max),
+			",STD: ", fmt.Sprintf("%.2f", e.Stat.STD),
+			",Mean: ", fmt.Sprintf("%.2f", e.Stat.Mean),
+			",P25: ", fmt.Sprintf("%.2f", e.Stat.P25),
+			",P50: ", fmt.Sprintf("%.2f", e.Stat.P50),
+			",P75: ", fmt.Sprintf("%.2f", e.Stat.P75))
+	}
 }
 
 func BenchmarkGenerateRecency(b *testing.B) {
@@ -71,7 +82,7 @@ func BenchmarkGenerateRecency(b *testing.B) {
 	rd := InitRawData()
 	for i := 0; i < 100000; i++ {
 		pts := rand.Intn(6)
-		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(20), pts, float64(pts*rand.Intn(2000)))
+		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(500), pts, float64(pts*rand.Intn(2000)))
 	}
 
 	rfm.GenerateRecency(rd)
