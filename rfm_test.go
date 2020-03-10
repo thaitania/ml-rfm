@@ -6,49 +6,73 @@ import (
 	"testing"
 )
 
-// TestAddRFMData is function for test add recency raw data
-func TestAddRFMData(t *testing.T) {
-	println("========== TestAddRFMData ==========")
-	rd := &rfmData{}
-	for i := 0; i < 1024; i++ {
+// TestAddDataRawSet is function for test add recency raw data
+func TestAddDataRawSet(t *testing.T) {
+	rd := InitRawData()
+	for i := 0; i < 100000; i++ {
 		pts := rand.Intn(6)
 		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(500), pts, float64(pts*rand.Intn(2000)))
 	}
-	println("= TestAddRFMData Process: 1/5 : must be not error : PASS")
+	println("= TestAddDataRawSet Process: 1/5 : must be not error : PASS")
 
 	_, err := rd.GetRFMRawDataByRange(5, 0)
 	if err != nil {
-		t.Errorf("= TestAddRFMData Process: 2/5 : must be not error : ERROR :" + " " + err.Error())
+		t.Errorf("= TestAddDataRawSet Process: 2/5 : must be not error : ERROR :" + " " + err.Error())
 	} else {
-		println("= TestAddRFMData Process: 2/5 : must be not error : PASS")
+		println("= TestAddDataRawSet Process: 2/5 : must be not error : PASS")
 	}
 
-	_, err = rd.GetRFMRawDataByRange(5, 100)
+	_, err = rd.GetRFMRawDataByRange(35, 100)
 	if err != nil {
-		t.Errorf("= TestAddRFMData Process: 3/5 : must be not error : ERROR" + " " + err.Error())
+		t.Errorf("= TestAddDataRawSet Process: 3/5 : must be not error : ERROR" + " " + err.Error())
 	} else {
-		println("= TestAddRFMData Process: 3/5 : must be not error : PASS")
+		println("= TestAddDataRawSet Process: 3/5 : must be not error : PASS")
 	}
 
 	_, err = rd.GetRFMRawDataByRange(5, 1021)
 	if err == nil {
-		t.Errorf("= TestAddRFMData Process: 4/5 : must be error : ERROR")
+		t.Errorf("= TestAddDataRawSet Process: 4/5 : must be error : ERROR")
 	} else {
-		println("= TestAddRFMData Process: 4/5 : must be error : PASS")
+		println("= TestAddDataRawSet Process: 4/5 : must be error : PASS")
 	}
 
 	_, err = rd.GetRFMRawData()
 	if err != nil {
-		t.Errorf("= TestAddRFMData Process: 5/5 : must be not error : ERROR")
+		t.Errorf("= TestAddDataRawSet Process: 5/5 : must be not error : ERROR")
 	} else {
-		println("= TestAddRFMData Process: 5/5 : must be not error : PASS")
+		println("= TestAddDataRawSet Process: 5/5 : must be not error : PASS")
 	}
 }
 
-func BenchmarkAddRFMData(b *testing.B) {
-	rd := &rfmData{}
+func BenchmarkAddDataRawSet(b *testing.B) {
+	rd := &DataRawSet{}
 	for i := 0; i < b.N; i++ {
 		pts := rand.Intn(6)
 		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(500), pts, float64(pts*rand.Intn(2000)))
 	}
+}
+
+func TestGenerateRecency(t *testing.T) {
+	rfm := &RFM{}
+	rfm.SetClusterSize(4)
+	rd := InitRawData()
+	for i := 0; i < 100000; i++ {
+		pts := rand.Intn(6)
+		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(20), pts, float64(pts*rand.Intn(2000)))
+	}
+
+	println("= TestGenerateRecency Process: 1/5 : must be not error : PASS")
+	rfm.GenerateRecency(rd)
+}
+
+func BenchmarkGenerateRecency(b *testing.B) {
+	rfm := &RFM{}
+	rfm.SetClusterSize(4)
+	rd := InitRawData()
+	for i := 0; i < 100000; i++ {
+		pts := rand.Intn(6)
+		rd.AddRFMRawData("test"+strconv.Itoa(i), rand.Intn(20), pts, float64(pts*rand.Intn(2000)))
+	}
+
+	rfm.GenerateRecency(rd)
 }

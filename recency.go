@@ -2,8 +2,9 @@ package rfm
 
 // Recency is struct for keep Recency
 type Recency struct {
-	NumCluster int
-	Recency    []ClusterStat
+	ClusterSize int
+	Cluster     []ClusterStat
+	Stat        *Stat
 }
 
 // // RecencyData is function for keep recency data
