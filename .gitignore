@@ -1,3 +1,4 @@
 main
 example/*/vendor
 .DS_Store
+example\retail\online-retail\dataset\OnlineRetail.csv
